@@ -1,0 +1,23 @@
+{
+  "name": "upgrade-utility",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hostology/upgrade-utility.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hostology/upgrade-utility/issues"
+  },
+  "homepage": "https://github.com/hostology/upgrade-utility#readme",
+  "dependencies": {
+    "inquirer": "^9.2.15",
+    "jscodeshift": "^0.15.2"
+  }
+}
