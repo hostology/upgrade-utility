@@ -1,16 +1,12 @@
-import child_process from "child_process";
-import fs from "fs";
-import path from "path";
+const child_process = require("child_process");
+const fs = require("fs");
+const path = require("path");
 
-import inquirer from "inquirer";
+const reverseIdentifiers = require("./transforms/reverse-identifiers");
 
-// Path to the project directory.
-const projectDir = path.join(__dirname, "../");
+const targetDirectory = "c:/hostology/github/host-auth-web";
 
-// Path to the directory that contains all transforms.
-const examplesDir = path.join(projectDir, "src/examples");
-// List of all transforms
-const transforms = fs.readdirSync(examplesDir);
+const transforms = ["example1", "example2", "example3"];
 
 // Function to recursively get all files within a folder matching a particular regex
 const getAllFiles = (dirPath, filenameRegex = /.*/, files) => {
@@ -25,6 +21,9 @@ const getAllFiles = (dirPath, filenameRegex = /.*/, files) => {
 };
 
 const main = async () => {
+  const inquirer = (await import("inquirer")).default;
+  console.log("INQUIRER", inquirer)
+
   const { transform } = await inquirer.prompt([
     {
       type: "list",
@@ -36,7 +35,7 @@ const main = async () => {
 
   const transformDir = path.join(examplesDir, transform);
   const transformFile = path.join(transformDir, `${transform}.ts`);
-  const transformInputFiles = getAllFiles(transformDir, /\.input\./).map(file => file.replace(projectDir, ""));
+  const transformInputFiles = getAllFiles(targetDirectory, /\.input\./).map(file => file.replace(targetDirectory, ""));
 
   const { inputFile } = await inquirer.prompt([
     {
