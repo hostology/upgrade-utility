@@ -1,87 +1,35 @@
-const child_process = require("child_process");
-const fs = require("fs");
-const path = require("path");
+const path = require('path');
+const Runner = require('jscodeshift/src/Runner');
 
-const reverseIdentifiers = require("./transforms/reverse-identifiers");
+// just the paths of the files to apply the transformation
+const paths = ['C:\\hostology\\github\\hostology-admin-web\\portals\\admin\\pages\\users'];
 
-const targetDirectory = "c:/hostology/github/host-auth-web";
+/**
+ * taken from
+ * @link https://github.com/facebook/jscodeshift/blob/48f5d6d6e5e769639b958f1a955c83c68157a5fa/bin/jscodeshift.js#L18
+ */
+const options = {
+  transform: 'transforms\\list-imports.js',
+  verbose: 0,
+  dry: false,
+  print: true,
+  babel: true,
+  extensions: 'js,jsx,ts,tsx',
+  ignorePattern: [],
+  ignoreConfig: [],
+  runInBand: false,
+  silent: false,
+  parser: 'babel',
+  stdin: false
+}
 
-const transforms = ["example1", "example2", "example3"];
 
-// Function to recursively get all files within a folder matching a particular regex
-const getAllFiles = (dirPath, filenameRegex = /.*/, files) => {
-  fs.readdirSync(dirPath).forEach(file => {
-    if (fs.statSync(`${dirPath}/${file}`).isDirectory()) {
-      files = getAllFiles(`${dirPath}/${file}`, filenameRegex, files);
-    } else if (filenameRegex.test(file)) {
-      files.push(path.join(dirPath, "/", file));
-    }
-  });
-  return files;
-};
-
-const main = async () => {
-  const inquirer = (await import("inquirer")).default;
-  console.log("INQUIRER", inquirer)
-
-  const { transform } = await inquirer.prompt([
-    {
-      type: "list",
-      name: "transform",
-      message: "Select a transform:",
-      choices: [...transforms],
-    },
-  ]);
-
-  const transformDir = path.join(examplesDir, transform);
-  const transformFile = path.join(transformDir, `${transform}.ts`);
-  const transformInputFiles = getAllFiles(targetDirectory, /\.input\./).map(file => file.replace(targetDirectory, ""));
-
-  const { inputFile } = await inquirer.prompt([
-    {
-      type: "list",
-      name: "inputFile",
-      message: "Choose a file to transform:",
-      choices: [...transformInputFiles],
-    },
-  ]);
-
-  // TODO Use Reflect to determine options
-  const { options } = await inquirer.prompt([
-    {
-      type: "input",
-      name: "options",
-      message: "Add CLI options (optional). For example, '-key1=value1 --key2=value2':",
-    },
-  ]);
-  return { transform, transformFile, inputFile, options };
-};
-
-main().then(({ transformFile, inputFile, options }) => {
-  // Execute
-  // e.g.
-  // "jscodeshift:reverse-identifiers": "jscodeshift -t ./src/examples/reverse-identifiers/reverse-identifiers.ts --extensions=ts src/examples/reverse-identifiers/reverse-identifiers.input.ts --print --dry"
-  // "jscodeshift:append-function-call": "jscodeshift -t ./src/examples/append-function-call/append-function-call.ts --extensions=ts src/examples/append-function-call/__testfixtures__/append-function-call.input.ts --print --dry --functionNameToCall=test --comment=abc"
-  // See https://github.com/facebook/jscodeshift#usage-cli
-
-  // eslint-disable-next-line @typescript-eslint/camelcase
-  const result = child_process.spawnSync(
-    path.join("node_modules", ".bin", "jscodeshift"),
-    [
-      "--dry",
-      "--print",
-      "--run-in-band",
-      "-t",
-      transformFile,
-      "--extensions=ts",
-      "--parser=ts",
-      inputFile,
-      ...options.split(" "),
-    ],
-    {
-      encoding: "utf8",
-    }
-  );
-
-  console.log(result.stdout);
-});
+/**
+ * taken from
+ * @link https://github.com/facebook/jscodeshift/blob/48f5d6d6e5e769639b958f1a955c83c68157a5fa/bin/jscodeshift.js#L135
+ */
+Runner.run(
+  /^https?/.test(options.transform) ? options.transform : path.resolve(options.transform),
+  paths,
+  options
+);
