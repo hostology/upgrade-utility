@@ -48,6 +48,15 @@ function getAllReferencedFiles({ modules, files }) {
   }, [])
 };
 
+function defineTransforms({ modules, files }) {
+  return files.map(({ file }) => {
+    const module = modules.find(module => file.startsWith(module.directory));
+    if (!module) return { file, moveFile: false };
+    const target = file.replace(module.directory, `${module.target}`);
+    return { file, target, moveFile: true };
+  });
+}
+
 function _fileIsOfType(file) {
   return fileTypes.some(fileType => file.endsWith(fileType));
 }
@@ -113,4 +122,5 @@ function _isLocalImport(importPath) {
 module.exports = {
   getAllFilesRecursively,
   getAllReferencedFiles,
+  defineTransforms,
 }

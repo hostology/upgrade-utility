@@ -15,10 +15,12 @@ const targets = {
 
 const modules = [{ 
   id: '@hostology/ui',
-  directory: getPath(`${packages}\\ui`)
+  directory: getPath(`${packages}\\ui`),
+  target: getPath(`${portals}\\admin\\ui`)
 }, { 
-  id: '@hostology/components',
-  directory: getPath(`${packages}\\components`)
+  id: '@hostology/helpers',
+  directory: getPath(`${packages}\\helpers`),
+  target: getPath(`${portals}\\admin\\helpers`)
 }]
 
 run({ targets, modules });
