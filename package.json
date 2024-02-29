@@ -19,6 +19,7 @@
   "dependencies": {
     "esprima": "^4.0.1",
     "esprima-next": "^6.0.2",
+    "glob": "^10.3.10",
     "inquirer": "^9.2.15",
     "jscodeshift": "^0.15.2"
   }
