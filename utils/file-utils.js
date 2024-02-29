@@ -8,10 +8,10 @@ const resolvers = [
   (path) => _tryResolve(`${path}.ts`),
   (path) => _tryResolve(`${path}.jsx`),
   (path) => _tryResolve(`${path}.tsx`),
-  (path) => _tryResolve(`${path}/index.js`),
-  (path) => _tryResolve(`${path}/index.ts`),
-  (path) => _tryResolve(`${path}/index.jsx`),
-  (path) => _tryResolve(`${path}/index.tsx`),
+  (path) => _tryResolve(`${path}\\index.js`),
+  (path) => _tryResolve(`${path}\\index.ts`),
+  (path) => _tryResolve(`${path}\\index.jsx`),
+  (path) => _tryResolve(`${path}\\index.tsx`),
 ]
 
 function tryResolveReference(path) {
