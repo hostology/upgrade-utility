@@ -8,6 +8,7 @@ function run({ targets, modules }) {
   const referencedFiles = moduleReferenceBuilder.getAllReferencedFiles({ modules, files });
   const filesToMove = transformBuilder.defineTransforms({ modules, files: referencedFiles }).filter(f => f.moveFile);
   transformUtils.doTransforms(filesToMove);
+  
   /*
   filesToMove.forEach(element => {
     console.log(`${element.file} => ${element.target}`)
