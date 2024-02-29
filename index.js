@@ -10,8 +10,7 @@ const getPath = (path) => {
 
 const targets = {
   targetDir: getPath(`${portals}\\admin`),
-  exclude: [/.*\\node_modules\\.*/, /.*\\public\\.*/, /.*\\\.next\\.*/],
-  fileTypes: ['js', 'jsx', 'ts', 'tsx']
+  exclude: [/.*\\node_modules\\.*/, /.*\\public\\.*/, /.*\\\.next\\.*/]
 }
 
 const modules = [{ 
