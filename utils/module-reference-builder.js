@@ -20,26 +20,35 @@ function getAllReferencedFiles({ modules, files }) {
   return reducedReferences;
 };
 
+const isImportDeclaration = (node) => node.type === "ImportDeclaration";
+const isReExportDeclaration = (node) =>
+  node.type === "ExportNamedDeclaration" && node.source;
+
 function _getReferencedFilesRecursively({ modules, file, ref, from }) {
   if (!_fileIsOfType(file)) return [{ file, ref, from }];
 
   const source = fs.readFileSync(file, "utf8");
   const result = esprima.parseModule(source, { jsx: true });
-  const importDeclarations = result.body
-    .filter(b => b.type === 'ImportDeclaration')
-    .map(b => b.source.value)
+
+  const declarations = result.body
+    .filter((b) => isImportDeclaration(b) || isReExportDeclaration(b))
+    .map((b) => b.source.value)
     .filter(_isMatchOrLocal(modules));
-  
+
   return [
     { file, ref, from },
-    ...importDeclarations.map(ref => _getReferencedFilesRecursively({
-      modules,
-      file: _getModulePath(modules, ref, file),
-      ref,
-      from: file
-    })).flat()
+    ...declarations
+      .map((ref) =>
+        _getReferencedFilesRecursively({
+          modules,
+          file: _getModulePath(modules, ref, file),
+          ref,
+          from: file,
+        })
+      )
+      .flat(),
   ];
-};
+}
 
 function _fileIsOfType(file) {
   return supportedJsFileTypes.some(fileType => file.endsWith(fileType));
