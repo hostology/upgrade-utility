@@ -3,7 +3,7 @@ const transformUtils = require("./utils/transform-utils");
 const moduleReferenceBuilder = require("./utils/module-reference-builder");
 const transformBuilder = require("./utils/transform-builder");
 
-function run({ targets, modules }) {
+function run({ targets, modules, dryRun = false }) {
   const files = fileProvider.getAllFilesRecursively(targets);
   const referencedFiles = moduleReferenceBuilder.getAllReferencedFiles({
     modules,
@@ -12,8 +12,17 @@ function run({ targets, modules }) {
   const filesToMove = transformBuilder
     .defineTransforms({ modules, files: referencedFiles })
     .filter((f) => f.moveFile);
-  transformUtils.doTransforms(filesToMove);
-  
+
+  if (dryRun) {
+    const filesToLog = [...filesToMove]
+      .sort((a, b) => a.file.localeCompare(b.file))
+      .map(({ file, target }) => ({ file, target }));
+
+    console.log(JSON.stringify(filesToLog, 0, 4));
+  } else {
+    transformUtils.doTransforms(filesToMove);
+  }
+
   /*
   filesToMove.forEach(element => {
     console.log(`${element.file} => ${element.target}`)

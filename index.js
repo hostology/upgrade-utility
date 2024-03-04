@@ -23,7 +23,9 @@ const modules = [{
   target: getPath(`${portals}\\admin\\helpers`)
 }]
 
-run({ targets, modules });
+const dryRun = process.argv.includes('--dry-run');
+
+run({ targets, modules, dryRun });
 
 
 
