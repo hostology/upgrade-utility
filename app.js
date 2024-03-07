@@ -14,19 +14,10 @@ function run({ targets, modules, dryRun = false }) {
     .filter((f) => f.moveFile);
 
   if (dryRun) {
-    const filesToLog = [...filesToMove]
-      .sort((a, b) => a.file.localeCompare(b.file))
-      .map(({ file, target }) => ({ file, target }));
-
-    console.log(JSON.stringify(filesToLog, 0, 4));
+    transformUtils.printTransforms(filesToMove);
   } else {
     transformUtils.doTransforms(filesToMove);
   }
-
-  /*
-  filesToMove.forEach(element => {
-    console.log(`${element.file} => ${element.target}`)
-  });*/
 }
 
 module.exports = run;
