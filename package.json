@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/hostology/upgrade-utility#readme",
   "dependencies": {
+    "npm-check": "^6.0.1",
     "esprima": "^4.0.1",
     "esprima-next": "^6.0.2",
     "glob": "^10.3.10",

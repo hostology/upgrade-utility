@@ -1,3 +1,4 @@
+const dependencyUtils = require("./utils/dependency-utils");
 const fileProvider = require("./utils/file-provider");
 const transformUtils = require("./utils/transform-utils");
 const moduleReferenceBuilder = require("./utils/module-reference-builder");
@@ -21,6 +22,9 @@ function run({ targets, modules, dryRun = false }) {
     console.log(JSON.stringify(filesToLog, 0, 4));
   } else {
     transformUtils.doTransforms(filesToMove);
+    // dependencyUtils.merge(targets.targetDir, modules);
+    // await depUtil.installPackages(targets.targetDir);
+    // depUtil.checkAndUpdate(targets.targetDir);
   }
 
   /*
