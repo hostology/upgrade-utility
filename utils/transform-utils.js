@@ -5,10 +5,10 @@ const path = require("path");
 
 const doTransforms = (transforms) => {
   transforms.forEach((transform) => {
-    if (transform.moveFile) {
-      _moveFile(transform);
-      _updateReferences(transform);
-    }
+    if (!transform.moveFile) return;
+    _moveFile(transform);
+    if (transform.moveOnly) return;
+    _updateReferences(transform);
   });
 };
 

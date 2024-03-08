@@ -13,10 +13,12 @@ function run({ targets, modules, dryRun = false }) {
     .defineTransforms({ modules, files: referencedFiles })
     .filter((f) => f.moveFile);
 
+  const includedFiles = transformBuilder.defineIncludedTransforms({ modules });
+
   if (dryRun) {
-    transformUtils.printTransforms(filesToMove);
+    transformUtils.printTransforms([...filesToMove, ...includedFiles]);
   } else {
-    transformUtils.doTransforms(filesToMove);
+    transformUtils.doTransforms([...filesToMove, ...includedFiles]);
   }
 }
 
