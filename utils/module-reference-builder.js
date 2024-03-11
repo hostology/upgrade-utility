@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const esprima = require("esprima-next");
+const babelParser = require("@babel/parser");
 const fileUtils = require("./file-utils");
 const { supportedJsFileTypes } = require("./constants");
 
@@ -37,9 +37,12 @@ function _getReferencedFilesRecursively({ modules, file, ref, from }) {
   if (!_fileIsOfType(file)) return [{ file, ref, from }];
 
   const source = fs.readFileSync(file, "utf8");
-  const result = esprima.parseModule(source, { jsx: true });
+  const result = babelParser.parse(source, {
+    sourceType: "module",
+    plugins: ["jsx"],
+  });
 
-  const declarations = result.body
+  const declarations = result.program.body
     .filter((b) => isImportDeclaration(b) || isReExportDeclaration(b))
     .map((b) => b.source.value)
     .filter(_isMatchOrLocal(modules));

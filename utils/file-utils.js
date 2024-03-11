@@ -1,6 +1,4 @@
 const fs = require('fs');
-const path = require('path')
-const esprima = require('esprima-next');
 
 const resolvers = [
   (path) => _tryResolve(path) ,
@@ -22,7 +20,7 @@ function tryResolveReference(path) {
       return resolved.path;
     }
   }
-  console.log("COULD NOT RESOLVE", ref);
+  console.log("COULD NOT RESOLVE", path);
   return undefined;
 }
 

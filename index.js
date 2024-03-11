@@ -1,15 +1,16 @@
 const run = require('./app');
+const fs = require('fs');
 
-const rootPath = `C:\\hostology\\github\\hostology-admin-web`
+const rootPath = `C:\\Works\\MOHARA\\Hostology\\hostology-admin-web`;
+const portalPath = 'portals\\admin';
 const packages = 'packages';
-const portals = 'portals';
 
 const getPath = (path) => {
   return `${rootPath}\\${path}`;
 };
 
 const targets = {
-  targetDir: getPath(`${portals}\\admin`),
+  targetDir: getPath(`${portalPath}`),
   exclude: [/.*\\node_modules\\.*/, /.*\\public\\.*/, /.*\\\.next\\.*/]
 }
 
@@ -17,16 +18,18 @@ const modules = [{
   id: '@hostology/ui',
   directory: getPath(`${packages}\\ui`),
   includes: ['public\\assets'],
-  target: getPath(`${portals}\\admin\\ui`)
+  target: getPath(`${portalPath}\\ui`)
 }, { 
   id: '@hostology/helpers',
   directory: getPath(`${packages}\\helpers`),
-  target: getPath(`${portals}\\admin\\helpers`)
+  target: getPath(`${portalPath}\\helpers`)
 }]
 
+const jsonFile = fs.existsSync(process.argv[2]) ? process.argv[2] : null;
 const dryRun = process.argv.includes('--dry-run');
 
-run({ targets, modules, dryRun });
+const jsonData = jsonFile ? fs.readFileSync(jsonFile, "utf8") : null;
+run({ targets, modules, dryRun, jsonData });
 
 
 

@@ -1,21 +1,21 @@
 const fs = require("fs");
 const recast = require("recast");
-const esprima = require("esprima-next");
+const babelParser = require("@babel/parser");
 const path = require("path");
+const { supportedJsFileTypes } = require("./constants");
 
 const doTransforms = (transforms) => {
   transforms.forEach((transform) => {
     if (!transform.moveFile) return;
     _moveFile(transform);
-    if (transform.moveOnly) return;
+    if (transform.moveOnly || !_fileIsOfType(transform.file)) return;
     _updateReferences(transform);
   });
 };
 
 const printTransforms = (transforms) => {
-  const items = [...transforms]
-    .sort((a, b) => a.file.localeCompare(b.file))
-    .map(({ file, target }) => ({ file, target }));
+  console.log(transforms);
+  const items = [...transforms].sort((a, b) => a.file.localeCompare(b.file));
 
   const outputDir = path.join(process.cwd(), "output");
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
@@ -41,8 +41,9 @@ const _updateReferences = ({ file, target }) => {
   const ast = recast.parse(content, {
     parser: {
       parse(source) {
-        return esprima.parseModule(source, {
-          jsx: true,
+        return babelParser.parse(source, {
+          sourceType: "module",
+          plugins: ["jsx", "decorators"],
           tokens: true,
           loc: true,
         });
@@ -75,6 +76,10 @@ const _getUpdatedImport = (specifiers) => {
 
   return { updatedImport, hasChanged };
 };
+
+function _fileIsOfType(file) {
+  return supportedJsFileTypes.some((fileType) => file.endsWith(fileType));
+}
 
 module.exports = {
   doTransforms,

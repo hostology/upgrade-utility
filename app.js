@@ -3,7 +3,18 @@ const transformUtils = require("./utils/transform-utils");
 const moduleReferenceBuilder = require("./utils/module-reference-builder");
 const transformBuilder = require("./utils/transform-builder");
 
-function run({ targets, modules, dryRun = false }) {
+function run({ targets, modules, jsonData, dryRun = false }) {
+  const transforms = JSON.parse(jsonData) ?? getTransforms(targets, modules);
+  if (dryRun) {
+    transformUtils.printTransforms(transforms);
+  } else {
+    transformUtils.doTransforms(transforms);
+  }
+}
+
+module.exports = run;
+
+function getTransforms(targets, modules) {
   const files = fileProvider.getAllFilesRecursively(targets);
   const referencedFiles = moduleReferenceBuilder.getAllReferencedFiles({
     modules,
@@ -15,11 +26,5 @@ function run({ targets, modules, dryRun = false }) {
 
   const includedFiles = transformBuilder.defineIncludedTransforms({ modules });
 
-  if (dryRun) {
-    transformUtils.printTransforms([...filesToMove, ...includedFiles]);
-  } else {
-    transformUtils.doTransforms([...filesToMove, ...includedFiles]);
-  }
+  return [...filesToMove, ...includedFiles];
 }
-
-module.exports = run;
