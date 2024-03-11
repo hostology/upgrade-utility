@@ -1,15 +1,15 @@
 const run = require('./app');
 
-const rootPath = `C:\\hostology\\github\\hostology-admin-web`
+const rootPath = `C:\\Works\\MOHARA\\Hostology\\hostology-admin-web`;
+const portalPath = 'portals\\admin';
 const packages = 'packages';
-const portals = 'portals';
 
 const getPath = (path) => {
   return `${rootPath}\\${path}`;
 };
 
 const targets = {
-  targetDir: getPath(`${portals}\\admin`),
+  targetDir: getPath(`${portalPath}`),
   exclude: [/.*\\node_modules\\.*/, /.*\\public\\.*/, /.*\\\.next\\.*/]
 }
 
@@ -17,11 +17,11 @@ const modules = [{
   id: '@hostology/ui',
   directory: getPath(`${packages}\\ui`),
   includes: ['public\\assets'],
-  target: getPath(`${portals}\\admin\\ui`)
+  target: getPath(`${portalPath}\\ui`)
 }, { 
   id: '@hostology/helpers',
   directory: getPath(`${packages}\\helpers`),
-  target: getPath(`${portals}\\admin\\helpers`)
+  target: getPath(`${portalPath}\\helpers`)
 }]
 
 const dryRun = process.argv.includes('--dry-run');
