@@ -20,7 +20,7 @@ function tryResolveReference(path) {
       return resolved.path;
     }
   }
-  console.log("COULD NOT RESOLVE", ref);
+  console.log("COULD NOT RESOLVE", path);
   return undefined;
 }
 
