@@ -13,20 +13,13 @@ function run({ targets, modules, dryRun = false }) {
     .defineTransforms({ modules, files: referencedFiles })
     .filter((f) => f.moveFile);
 
+  const includedFiles = transformBuilder.defineIncludedTransforms({ modules });
+
   if (dryRun) {
-    const filesToLog = [...filesToMove]
-      .sort((a, b) => a.file.localeCompare(b.file))
-      .map(({ file, target }) => ({ file, target }));
-
-    console.log(JSON.stringify(filesToLog, 0, 4));
+    transformUtils.printTransforms([...filesToMove, ...includedFiles]);
   } else {
-    transformUtils.doTransforms(filesToMove);
+    transformUtils.doTransforms([...filesToMove, ...includedFiles]);
   }
-
-  /*
-  filesToMove.forEach(element => {
-    console.log(`${element.file} => ${element.target}`)
-  });*/
 }
 
 module.exports = run;

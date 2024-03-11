@@ -12,7 +12,22 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\index.js"
+            "program": "${workspaceFolder}\\index.js",
+            "preLaunchTask": "Reset target",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "runtimeVersion": "20",
+            "name": "Launch dry-run",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\index.js",
+            "args": [
+                "--dry-run"
+            ],
+            "preLaunchTask": "Reset target",
         }
     ]
 }

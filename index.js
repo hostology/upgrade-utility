@@ -16,6 +16,7 @@ const targets = {
 const modules = [{ 
   id: '@hostology/ui',
   directory: getPath(`${packages}\\ui`),
+  includes: ['public\\assets'],
   target: getPath(`${portals}\\admin\\ui`)
 }, { 
   id: '@hostology/helpers',
