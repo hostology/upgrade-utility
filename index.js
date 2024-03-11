@@ -1,4 +1,5 @@
 const run = require('./app');
+const fs = require('fs');
 
 const rootPath = `C:\\Works\\MOHARA\\Hostology\\hostology-admin-web`;
 const portalPath = 'portals\\admin';
@@ -24,9 +25,11 @@ const modules = [{
   target: getPath(`${portalPath}\\helpers`)
 }]
 
+const jsonFile = fs.existsSync(process.argv[2]) ? process.argv[2] : null;
 const dryRun = process.argv.includes('--dry-run');
 
-run({ targets, modules, dryRun });
+const jsonData = jsonFile ? fs.readFileSync(jsonFile, "utf8") : null;
+run({ targets, modules, dryRun, jsonData });
 
 
 

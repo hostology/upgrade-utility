@@ -13,9 +13,8 @@ const doTransforms = (transforms) => {
 };
 
 const printTransforms = (transforms) => {
-  const items = [...transforms]
-    .sort((a, b) => a.file.localeCompare(b.file))
-    .map(({ file, target }) => ({ file, target }));
+  console.log(transforms);
+  const items = [...transforms].sort((a, b) => a.file.localeCompare(b.file));
 
   const outputDir = path.join(process.cwd(), "output");
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
@@ -43,7 +42,7 @@ const _updateReferences = ({ file, target }) => {
       parse(source) {
         return babelParser.parse(source, {
           sourceType: "module",
-          plugins: ["jsx"],
+          plugins: ["jsx", "decorators"],
           tokens: true,
           loc: true,
         });
