@@ -1,6 +1,4 @@
 const fs = require('fs');
-const path = require('path')
-const esprima = require('esprima-next');
 
 const resolvers = [
   (path) => _tryResolve(path) ,

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const recast = require("recast");
-const esprima = require("esprima-next");
+const babelParser = require("@babel/parser");
 const path = require("path");
 
 const doTransforms = (transforms) => {
@@ -41,8 +41,9 @@ const _updateReferences = ({ file, target }) => {
   const ast = recast.parse(content, {
     parser: {
       parse(source) {
-        return esprima.parseModule(source, {
-          jsx: true,
+        return babelParser.parse(source, {
+          sourceType: "module",
+          plugins: ["jsx"],
           tokens: true,
           loc: true,
         });
