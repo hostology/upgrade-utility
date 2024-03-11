@@ -2,12 +2,13 @@ const fs = require("fs");
 const recast = require("recast");
 const babelParser = require("@babel/parser");
 const path = require("path");
+const { supportedJsFileTypes } = require("./constants");
 
 const doTransforms = (transforms) => {
   transforms.forEach((transform) => {
     if (!transform.moveFile) return;
     _moveFile(transform);
-    if (transform.moveOnly) return;
+    if (transform.moveOnly || !_fileIsOfType(transform.file)) return;
     _updateReferences(transform);
   });
 };
@@ -75,6 +76,10 @@ const _getUpdatedImport = (specifiers) => {
 
   return { updatedImport, hasChanged };
 };
+
+function _fileIsOfType(file) {
+  return supportedJsFileTypes.some((fileType) => file.endsWith(fileType));
+}
 
 module.exports = {
   doTransforms,
