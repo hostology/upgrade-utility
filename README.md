@@ -2,7 +2,15 @@
 
 Very basic usage at the moment.
 
-1. Edit `const rootPath = [path-to-repo]` in index.js
+1. Edit `config.json` or add a git-ignored `config.local.json`
+
+    Example:
+    ```json
+    {
+        "rootPath": "C:\\hostology\\hostology-admin-web",
+        "portalPath": "portals\\admin"
+    }
+    ```
 2. run `npm install` or `yarn`
 3. Make sure you are in a clean/experimental branch in the repo that you want to target (it will make changes to files)
 4. In the root directory run `node .`

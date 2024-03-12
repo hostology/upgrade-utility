@@ -1,4 +1,5 @@
 output/
+config.local.json
 
 # Logs
 logs
