@@ -5,62 +5,45 @@ const fileUtils = require("./file-utils");
 const { supportedJsFileTypes } = require("./constants");
 
 function getAllReferencedFiles({ modules, files }) {
-  const allReferences = files.reduce((acc, file) => {
-    return [...acc, ..._getReferencedFilesRecursively({ modules, file })];
-  }, []);
-
-  const reducedReferences = allReferences.reduce((acc, ref) => {
-    const existingRef = acc.find((a) => a.file === ref.file) ?? {
-      file: ref.file,
-      references: [],
-    };
-    return [
-      ...acc.filter((a) => a.file !== ref.file),
-      {
-        file: ref.file,
-        references: [
-          ...existingRef.references,
-          { ref: ref.ref, from: ref.from },
-        ],
-      },
-    ];
-  }, []);
-
-  return reducedReferences;
+  const references = [];
+  files.forEach((file) => {
+    console.log(`Building references for file ${file}...`);
+    _getFileReferencesRecursively(modules, references, file);
+  });
+  return references.map(r => ({ file: r.path, references: r.refs.map(r => r.file) }));
 }
 
-const isImportDeclaration = (node) => node.type === "ImportDeclaration";
-const isReExportDeclaration = (node) =>
-  node.type === "ExportNamedDeclaration" && node.source;
+function _getFileReferencesRecursively(modules, files, file) {
+  if (!_fileIsOfType(file)) return;
+  if (files.some(f => f.path === file)) return;
 
-function _getReferencedFilesRecursively({ modules, file, ref, from }) {
-  if (!_fileIsOfType(file)) return [{ file, ref, from }];
+  const fileDef = _buildFileDef(modules, file);
+  files.push(fileDef);
 
+  fileDef.refs.reduce((acc, ref) => _getFileReferencesRecursively(modules, files, ref.file), files);
+}
+
+function _buildFileDef(modules, file) {
   const source = fs.readFileSync(file, "utf8");
   const result = babelParser.parse(source, {
     sourceType: "module",
     plugins: ["jsx"],
   });
 
-  const declarations = result.program.body
+  const refs = result.program.body
     .filter((b) => isImportDeclaration(b) || isReExportDeclaration(b))
-    .map((b) => b.source.value)
-    .filter(_isMatchOrLocal(modules));
+    .filter(b => _isMatchOrLocal(modules)(b.source.value))
+    .map((b) => ({ ref: b.source.value, file: _getModulePath(modules, b.source.value, file)}));
 
-  return [
-    { file, ref, from },
-    ...declarations
-      .map((ref) =>
-        _getReferencedFilesRecursively({
-          modules,
-          file: _getModulePath(modules, ref, file),
-          ref,
-          from: file,
-        })
-      )
-      .flat(),
-  ];
+  return {
+    path: file,
+    refs,
+  };
 }
+
+const isImportDeclaration = (node) => node.type === "ImportDeclaration";
+const isReExportDeclaration = (node) =>
+  node.type === "ExportNamedDeclaration" && node.source;
 
 function _fileIsOfType(file) {
   return supportedJsFileTypes.some((fileType) => file.endsWith(fileType));
