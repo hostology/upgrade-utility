@@ -32,7 +32,7 @@ const jsonData = jsonFile ? fs.readFileSync(jsonFile, "utf8") : null;
 run({ targets, modules, dryRun, jsonData });
 
 function getPath(path) {
-  return `${rootPath}/${path}`;
+  return `${rootPath}\\${path}`;
 }
 
 function loadConfig(path) {
