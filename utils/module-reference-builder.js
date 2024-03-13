@@ -14,8 +14,11 @@ function getAllReferencedFiles({ modules, files }) {
 }
 
 function _getFileReferencesRecursively(modules, files, file) {
-  if (!_fileIsOfType(file)) return;
-  if (files.some(f => f.path === file)) return;
+  if (files.some((f) => f.path === file)) return;
+  if (!_fileIsOfType(file)) {
+    files.push({ path: file, refs: [] });
+    return;
+  }
 
   const fileDef = _buildFileDef(modules, file);
   files.push(fileDef);
